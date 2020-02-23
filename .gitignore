@@ -1,2 +1,6 @@
 # gcloud credentials
 config/*.json
+
+# VS code debugging
+debug
+__debug_bin

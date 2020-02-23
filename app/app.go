@@ -22,12 +22,11 @@ type server struct {
 
 // ConnectFirestore - connects to firestore and returns Handler
 func ConnectFirestore() http.Handler {
-	// Sets your Google Cloud Platform project ID.
+	// TODO move project-id and path to json to dotenv
 	projectID := "sd-covid-2"
-
 	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/sd-covid-2-3c873e023505.json")
 	if err != nil {
-		log.Println("Error", err)
+		log.Fatalf("Error setting env var for firestore credentials: %v", err)
 	}
 
 	// Get a Firestore client.
@@ -36,29 +35,29 @@ func ConnectFirestore() http.Handler {
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
+	// Close client when done.
+	defer client.Close()
 
 	r := chi.NewRouter()
 	r.Use(
 		middleware.Logger,
 	)
 
-	srv := &server{
+	s := &server{
 		ctx:    ctx,
 		client: client,
 		router: r,
 	}
 
-	srv.routes()
-
-	readFromStore(ctx, client)
-
-	// Close client when done.
-	defer client.Close()
+	s.routes()
 
 	return r
 }
 
-func readFromStore(ctx context.Context, client *firestore.Client) {
+func (s *server) readFromStore() map[string]interface{} {
+	client := s.client
+	ctx := s.ctx
+
 	iter := client.Collection("covid_data").Documents(ctx)
 	for {
 		doc, err := iter.Next()
@@ -66,29 +65,27 @@ func readFromStore(ctx context.Context, client *firestore.Client) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			log.Fatalf("Failed to iterate over data: %v", err)
 		}
-		fmt.Printf("Found firestore data at ref: %v\n", doc.Ref)
+		fmt.Printf("Reading firestore data: %v\n", doc)
+		return doc.Data()
 	}
+	return nil
 }
 
 func (s *server) routes() {
 	s.router.Get("/", handler)
-	s.router.Get("/about", s.handleAbout())
+	s.router.Get("/data", s.handleData())
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	log.Print("Hello world received a request.")
-	target := os.Getenv("TARGET")
-	if target == "" {
-		target = "Bob"
-	}
-	fmt.Fprintf(w, "Hello %s!\n", target)
+	fmt.Fprintf(w, "go-covid-api is running!\n")
 }
 
-func (s *server) handleAbout() http.HandlerFunc {
+func (s *server) handleData() http.HandlerFunc {
+	data := s.readFromStore()
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "this is handleAbout")
-		// use thing
+		fmt.Fprintf(w, "data: %v\n", data)
 	}
 }
