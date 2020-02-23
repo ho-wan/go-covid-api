@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"cloud.google.com/go/firestore"
 	"github.com/go-chi/chi"
@@ -25,10 +24,6 @@ type server struct {
 func ConnectFirestore() http.Handler {
 	// TODO move project-id and path to json to dotenv
 	projectID := "sd-covid-2"
-	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/sd-covid-2-3c873e023505.json")
-	if err != nil {
-		log.Fatalf("Error setting env var for firestore credentials: %v", err)
-	}
 
 	// Get a Firestore client.
 	ctx := context.Background()
