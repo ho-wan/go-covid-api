@@ -9,20 +9,23 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"google.golang.org/api/iterator"
 )
 
+// server - router that wraps around firestore
 type server struct {
 	router *chi.Mux
 	ctx    context.Context
 	client *firestore.Client
 }
 
-func connectFirestore() *server {
+// ConnectFirestore - connects to firestore and returns Handler
+func ConnectFirestore() http.Handler {
 	// Sets your Google Cloud Platform project ID.
 	projectID := "sd-covid-2"
 
-	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "../config/sd-covid-2-3c873e023505.json")
+	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/sd-covid-2-3c873e023505.json")
 	if err != nil {
 		log.Println("Error", err)
 	}
@@ -35,7 +38,9 @@ func connectFirestore() *server {
 	}
 
 	r := chi.NewRouter()
-	r.Use()
+	r.Use(
+		middleware.Logger,
+	)
 
 	srv := &server{
 		ctx:    ctx,
@@ -43,12 +48,14 @@ func connectFirestore() *server {
 		router: r,
 	}
 
+	srv.routes()
+
 	readFromStore(ctx, client)
 
 	// Close client when done.
 	defer client.Close()
 
-	return srv
+	return r
 }
 
 func readFromStore(ctx context.Context, client *firestore.Client) {
@@ -66,8 +73,8 @@ func readFromStore(ctx context.Context, client *firestore.Client) {
 }
 
 func (s *server) routes() {
-	s.router.HandleFunc("/", handler)
-	s.router.HandleFunc("/about", s.handleAbout())
+	s.router.Get("/", handler)
+	s.router.Get("/about", s.handleAbout())
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -80,9 +87,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) handleAbout() http.HandlerFunc {
-	fmt.Println("handleAbout")
-	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "this is handleAbout")
 		// use thing
 	}
 }
