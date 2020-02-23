@@ -63,6 +63,7 @@ func (s *server) readFromStore() map[string]interface{} {
 		log.Printf("Failed to get data from firestore: %v", err)
 	}
 
+	fmt.Printf("Reading firestore data: %v\n", docsnap)
 	dataMap := docsnap.Data()
 	return dataMap
 }
