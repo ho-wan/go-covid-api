@@ -9,11 +9,6 @@ import (
 )
 
 func main() {
-	err := os.Setenv("GCLOUD_PROJECT", "sd-covid-2")
-	if err != nil {
-		log.Fatalf("Error setting env var %v", err)
-	}
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
