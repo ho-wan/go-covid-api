@@ -11,5 +11,5 @@ GOOGLE_APPLICATION_CREDENTIALS=config/sd-covid-2-3c873e023505.json go run covid-
 gcloud builds submit --tag gcr.io/sd-covid-2/covid-api
 ```
 ```bash
-gcloud run deploy --image gcr.io/sd-covid-2/covid-api --platform managed
+gcloud run deploy --image gcr.io/sd-covid-2/covid-api --platform managed covid-api
 ```
