@@ -14,7 +14,7 @@
    - '--image'
    - 'gcr.io/$PROJECT_ID/covid-api:$COMMIT_SHA'
    - '--region'
-   - '[REGION]'
+   - 'us-east1'
    - '--platform'
    - 'managed'
  images:
