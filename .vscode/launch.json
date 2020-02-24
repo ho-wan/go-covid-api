@@ -10,7 +10,9 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/covid-api.go",
-            "env": {},
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "config/sd-covid-2-3c873e023505.json",
+            },
             "args": []
         }
     ]

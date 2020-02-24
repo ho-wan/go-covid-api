@@ -6,18 +6,12 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 )
 
 func main() {
-	absPath, err := filepath.Abs("config/sd-covid-2-3c873e023505.json")
+	err := os.Setenv("GCLOUD_PROJECT", "sd-covid-2")
 	if err != nil {
-		log.Fatalf("Error setting file path: %v", err)
-	}
-
-	err = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", absPath)
-	if err != nil {
-		log.Fatalf("Error setting env var for firestore credentials: %v", err)
+		log.Fatalf("Error setting env var %v", err)
 	}
 
 	port := os.Getenv("PORT")

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	"github.com/go-chi/chi"
@@ -23,7 +24,10 @@ type server struct {
 // ConnectFirestore - connects to firestore and returns Handler
 func ConnectFirestore() http.Handler {
 	// TODO move project-id and path to json to dotenv
-	projectID := "sd-covid-2"
+	projectID := os.Getenv("GCLOUD_PROJECT")
+	if projectID == "" {
+		log.Fatalf("Set Firebase project ID via GCLOUD_PROJECT env variable.")
+	}
 
 	// Get a Firestore client.
 	ctx := context.Background()
