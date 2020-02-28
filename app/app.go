@@ -10,6 +10,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/rs/cors"
 )
 
 // server - router that wraps around firestore
@@ -21,7 +22,17 @@ type server struct {
 // ConnectFirestore - connects to firestore and returns Handler
 func ConnectFirestore() http.Handler {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+
+	c := cors.New(cors.Options{
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET"},
+		AllowedOrigins:   []string{"http://localhost:3000", "https://covid-api.spandraw.com", "https://covid.spandraw.com"},
+		AllowedHeaders:   []string{"Origin", "Content-Length", "Content-Type"},
+		// Change Debug to true to show additional logging information
+		Debug: false,
+	})
+
+	r.Use(middleware.Logger, c.Handler)
 
 	s := &server{
 		router: r,

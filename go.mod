@@ -5,4 +5,5 @@ go 1.13
 require (
 	cloud.google.com/go/firestore v1.1.1
 	github.com/go-chi/chi v4.0.3+incompatible
+	github.com/rs/cors v1.7.0
 )
