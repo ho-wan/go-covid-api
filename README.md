@@ -1,6 +1,15 @@
 # Covid data API (in GO)
 
-run locally with VS Code debugger - press F5
+---
+
+ENDPOINTS:
+
+GET `/data` to fetch data as JSON
+GET `/update` to update data using firestore
+
+---
+
+start local server with VS Code debugger - press F5
 
 run locally via command (pass in env var as cred)
 ```bash
