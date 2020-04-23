@@ -36,14 +36,14 @@ func ConnectFirestore() http.Handler {
 
 	s := &server{
 		router: r,
-		data:   readDataFromStore(),
+		data:   loadDataFromStore(),
 	}
 	s.routes()
 
 	return r
 }
 
-func readDataFromStore() map[string]interface{} {
+func loadDataFromStore() map[string]interface{} {
 	// TODO move project-id to dotenv
 	projectID := "sd-covid-2"
 
@@ -68,7 +68,7 @@ func readDataFromStore() map[string]interface{} {
 
 func (s *server) routes() {
 	s.router.Get("/", handler)
-	s.router.Get("/data", s.handleFetchData())
+	s.router.Get("/data", s.handleFetchData)
 	s.router.Get("/update", s.updateDataHandler)
 }
 
@@ -78,15 +78,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 // updateDataHandler - updates data by fetching from firestore
 func (s *server) updateDataHandler(w http.ResponseWriter, r *http.Request) {
-	s.data = readDataFromStore()
+	s.data = loadDataFromStore()
+	w.WriteHeader(http.StatusAccepted)
 	fmt.Fprintf(w, "data updated!\n")
 }
 
 // handleFetchData - returns data in state as json
-func (s *server) handleFetchData() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(s.data)
-	}
+func (s *server) handleFetchData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(s.data)
 }
