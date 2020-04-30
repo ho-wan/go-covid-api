@@ -13,7 +13,7 @@ start local server with VS Code debugger - press F5
 
 start local server via command (pass in env var as cred)
 ```bash
-GOOGLE_APPLICATION_CREDENTIALS=config/sd-covid-2-3c873e023505.json go run covid-api.go
+GOOGLE_APPLICATION_CREDENTIALS=config/{filename.json} go run covid-api.go
 ```
 
 ---
