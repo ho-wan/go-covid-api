@@ -26,7 +26,7 @@ func ConnectFirestore() http.Handler {
 	c := cors.New(cors.Options{
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET"},
-		AllowedOrigins:   []string{"http://localhost:3000", "https://covid-api.spandraw.com", "https://covid.spandraw.com"},
+		AllowedOrigins:   []string{"http://localhost:3000", "https://covid-api.spandraw.com", "https://covid.spandraw.com", "https://covid-api-uahbr4oaja-ue.a.run.app"},
 		AllowedHeaders:   []string{"Origin", "Content-Length", "Content-Type"},
 		// Change Debug to true to show additional logging information
 		Debug: false,
